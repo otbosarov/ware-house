@@ -78,24 +78,26 @@ class InputProductsController extends Controller
                 $oldSellingPrice = $productVariantDetail->old_selling_price;
                 $detailRaise = $productVariantDetail->raise;
                 if ($input->currency_type == 'USD') {
-                    $newSellingPrice = $input->input_price * $currency * ($detailRaise / 100);
+                    $newSellingPrice = $input->input_price * $currency * (($detailRaise / 100)+1);
                 } else {
-                    $newSellingPrice = $input->input_price * ($detailRaise / 100);
+                    $newSellingPrice = $input->input_price * (($detailRaise / 100)+1);
                 }
+
                 if ($newSellingPrice < $oldSellingPrice) {
                     $potensialPrice = $oldSellingPrice;
                 } else {
                     $potensialPrice = $newSellingPrice;
                 }
+                
                 $productVariantDetail->update([
                     'residue' => $productVariantDetail->residue + $request->amount,
                     'selling_price' => $potensialPrice,
                     'old_selling_price' => $potensialPrice,
                 ]);
             } else {
+                $USD = ($input->currency_type == 'USD');
                 $USDPrice = (($request->input_price) * 13300) * (($categoryRaise / 100) + 1);
                 $UZSPrice = ($request->input_price) * (($categoryRaise / 100) + 1);
-                $USD = ($input->currency_type == 'USD');
 
                 ProductVariantDetail::create([
                     'product_variant_id' => $request->product_variant_id,
