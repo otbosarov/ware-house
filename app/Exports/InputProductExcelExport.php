@@ -13,10 +13,9 @@ class InputProductExcelExport implements FromCollection
     public function collection()
     {
 
-        $data = [
-            'start_date' => request()->start_date,
-            'end_date' => request()->end_date,
-        ];
+        request()->start_date;
+        request()->end_date;
+
         $data =   InputProduct::join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
             ->join('categories', 'products.product_category_id', '=', 'categories.id')
