@@ -30,7 +30,7 @@ class InputProductsController extends Controller
             ->when($search, function ($query) use ($search) {
                 $query->where('product_variant_title', "LIKE", "%$search%");
             })
-            ->when($startDate, function ($query) use ($dates, $endDate) {
+            ->when($startDate, function ($query) use ($dates, ) {
                 $query->whereBetween('input_products.created_at', $dates);
             })
             ->paginate($perPage);
@@ -88,7 +88,7 @@ class InputProductsController extends Controller
                 } else {
                     $potensialPrice = $newSellingPrice;
                 }
-                
+
                 $productVariantDetail->update([
                     'residue' => $productVariantDetail->residue + $request->amount,
                     'selling_price' => $potensialPrice,

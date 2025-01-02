@@ -23,8 +23,8 @@ class ProductRequest extends FormRequest
     {
         return [
             'title' => 'required|string|min:3|max:255',
-            'product_category_id' => 'required|integer|exists:product_categories,id',
-            'product_brend_id' => 'required|integer|exists:product_brends,id',
+            'product_category_id' => 'required|integer|exists:categories,id',
+            'product_brend_id' => 'required|integer|exists:brends,id',
         ];
     }
     public function messages(){
