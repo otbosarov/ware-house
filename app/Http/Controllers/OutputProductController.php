@@ -16,15 +16,13 @@ class OutputProductController extends Controller
     {
         $parPage = request('par_page', 15);
         $search = request('search');
-        $start_date  = request('startDate');
-        $end_date = request('endDate');
+        $dates = request('dates',[]);
 
         $data = OutputProduct::join('product_variants', 'output_products.product_variant_id', '=', 'product_variants.id')
 
-            ->when($start_date, function ($query) use ($start_date, $end_date) {
-                $query->whereDate('output_products.created_at', $start_date)
-                    ->orWhereDate('output_products.created_at', $end_date);
-            })
+            ->when($$dates, function ($query) use ($dates) {
+                $query->whereBetween('output_products.created_at', $$dates);
+             })
             ->when($search, function ($query) use ($search) {
                 $query->where('product_variant_title', "LIKE", "$$search$");
             })

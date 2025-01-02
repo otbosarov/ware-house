@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class ProductVariantController extends Controller
 {
+    public function __construct(private ProductVariant $productVariant){}
     public function index()
     {
         $perPage = request('per_page', 15);
@@ -24,7 +25,7 @@ class ProductVariantController extends Controller
     public function store(ProductVariantRequest $request)
     {
         try {
-            ProductVariant::create([
+             $variant =  $this->productVariant->create([
                 'product_variant_title' => $request->product_variant_title,
                 'product_id' => $request->product_id,
                 'color' => $request->color,
@@ -44,13 +45,13 @@ class ProductVariantController extends Controller
     public function update(ProductVariantRequest $request, $id)
     {
         try {
-            $product_variant = ProductVariant::where('id', $id)->first();
+            $product_variant = $this->productVariant->where('id', $id)->first();
             $product_variant->update([
-                'product_variant_title' => $request->product_variant_title,
-                'product_id' => $request->product_id,
-                'color' => $request->color,
-                'internal_memory' => $request->internal_memory,
-                'weight' => $request->weight
+                'product_variant_title' => $request->product_variant_title ?? $product_variant->product_variant_title,
+                'product_id' => $request->product_id ?? $product_variant->product_id,
+                'color' => $request->color ?? $product_variant->color,
+                'internal_memory' => $request->internal_memory ,
+                'weight' => $request->weight ?? $product_variant
             ]);
             return response()->json(['message' => "Ma'lumot yangilandi"], 200);
         } catch (\Exception $exception) {

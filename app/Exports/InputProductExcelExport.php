@@ -17,22 +17,6 @@ class InputProductExcelExport implements FromCollection
      */
     public function collection()
     {
-        // $data =   InputProduct::join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')
-        //     ->join('products', 'product_variants.product_id', '=', 'products.id')
-        //     ->join('categories', 'products.product_category_id', '=', 'categories.id')
-        //     ->join('brends', 'products.product_brend_id', '=', 'brends.id')
-        //     ->join('product_variant_details', 'product_variants.id', '=', 'product_variant_details.product_variant_id')
-        //     ->select(
-        //         'input_products.id',
-        //         'product_variant_title',
-        //         'category_title',
-        //         'brend_title',
-        //         'currency_type',
-        //         'input_price',
-        //         'selling_price',
-        //         'amount'
-        //     )
-        //     ->get();
         return  $this->data->prepend([
             'id' => 'ID',
             'product_variant_title' => "Tovar nomi",

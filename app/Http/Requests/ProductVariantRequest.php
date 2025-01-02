@@ -25,8 +25,8 @@ class ProductVariantRequest extends FormRequest
             'product_variant_title'=>'required|string|min:3|max:255',
             'product_id'=>'required|integer|min:1|exists:products,id',
             'color'=>'required|string|min:2|max:255|nullable',
-            'internal_memory'=>'required|string|min:2|max:255|nullable',
-            'weight'=>'required|string|min:1|max:255|nullable',
+            'internal_memory'=>'nullable|string|min:2|max:255|nullable',
+            'weight'=>'nullable|string|min:1|max:255|nullable',
         ];
     }
     public function messages(){

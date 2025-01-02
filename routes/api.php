@@ -45,6 +45,8 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::post('product_create',[ProductController::class,'store']);
     Route::put('product_update/{id}',[ProductController::class,'update']);
 
+    // Route::resource('products', [ProductController::class]);
+
     Route::get('product_variant_show',[ProductVariantController::class, 'index']);
     Route::post('product_variant_create',[ProductVariantController::class,'store']);
     Route::put('product_variant_update/{id}',[ProductVariantController::class,'update']);

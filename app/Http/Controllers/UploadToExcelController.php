@@ -17,15 +17,15 @@ class UploadToExcelController extends Controller
     // public function __construct(private $data) {}
     public function InputProductsExcel()
     {
-        $startData = request('start_date');
-        $endData = request('end_date');
+        $dates = request('dates',[]);
         $data =   InputProduct::join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
             ->join('categories', 'products.product_category_id', '=', 'categories.id')
             ->join('brends', 'products.product_brend_id', '=', 'brends.id')
             ->join('product_variant_details', 'product_variants.id', '=', 'product_variant_details.product_variant_id')
-            ->where('input_products.created_at', '>=', $startData)
-            ->where('input_products.created_at', '<=', $endData)
+            ->when($dates,function($query)use($dates){
+                $query->whereBetween('input_products.created_at',$dates);
+            })
             ->select(
                 'input_products.id',
                 'product_variant_title',
@@ -47,13 +47,13 @@ class UploadToExcelController extends Controller
     }
     public function OutputProductsExcel()
     {
-        $startData = request('start_date');
-        $endData = request('end_date');
+        $dates = request('dates',[]);
         $data = OutputProduct::join('product_variants', 'output_products.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
             ->join('categories', 'products.product_category_id', '=', 'categories.id')
-            ->where('output_products.created_at', '>=', $startData)
-            ->where('output_products.created_at', '<=', $endData)
+           ->when($dates,function($query)use($dates){
+             $query->whereBetween('output_products.created_at',$dates);
+           })
             ->select('output_products.id', 'product_variant_title', 'category_title', 'output_quantity', 'output_selling_price')
             ->get();
         $now = date("Y_m_d_H_i_s");
@@ -67,14 +67,15 @@ class UploadToExcelController extends Controller
     }
     public function ProductVariantDetailsExcel()
     {
-        $startData = request('start_date');
-        $endData = request('end_date');
+        $dates = request('dates', []);
+
         $data =  ProductVariantDetail::join('product_variants', 'product_variant_details.product_variant_id', 'product_variants.id')
             ->join('products', 'product_variants.product_id', 'products.id')
             ->join('categories', 'products.product_category_id', 'categories.id')
             ->join('brends', 'products.product_brend_id', 'brends.id')
-            ->where('product_variant_details.created_at', '>=', $startData)
-            ->where('product_variant_details.created_at', '<=', $endData)
+            ->when($dates, function ($query) use ($dates) {
+                   $query->whereBetween('product_variant_details.created_at', $dates);
+            })
             ->select(
                 'product_variant_id',
                 'product_variants.product_variant_title',
@@ -86,8 +87,8 @@ class UploadToExcelController extends Controller
                 'product_variant_details.residue',
             )
             ->get();
-            $now = date("Y_m_d_H_i_s");
-            $url = "public/" . $now . "product_variant_details_excel.xlsx";
+        $now = date("Y_m_d_H_i_s");
+        $url = "public/" . $now . "product_variant_details_excel.xlsx";
         Excel::store(new ProductVariantDetailExcelExport($data), $url);
         return response()->json([
             'message' => "Tovar qoldig'i excalga yuklandi",

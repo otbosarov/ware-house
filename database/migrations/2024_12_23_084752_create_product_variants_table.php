@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
-            $table->string('product_variant_title');
+            $table->string('product_variant_title')->unique();
             $table->foreignId('product_id')->constrained('products');
             $table->string('color')->nullable();
             $table->string('internal_memory')->nullable();
