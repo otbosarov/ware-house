@@ -15,6 +15,7 @@ class InputProductsController extends Controller
 {
     public function index()
     {
+        if (!($this->check('product', 'get'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         $perPage = request('per_page', 15);
         $search = request('search');
         $startDate = request('start_date');
@@ -30,7 +31,7 @@ class InputProductsController extends Controller
             ->when($search, function ($query) use ($search) {
                 $query->where('product_variant_title', "LIKE", "%$search%");
             })
-            ->when($startDate, function ($query) use ($dates, ) {
+            ->when($startDate, function ($query) use ($dates,) {
                 $query->whereBetween('input_products.created_at', $dates);
             })
             ->paginate($perPage);
@@ -38,7 +39,7 @@ class InputProductsController extends Controller
     }
     public function store(InputProductRequest $request)
     {
-
+        if (!($this->check('product', 'add'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         $client = new Client();
         $now = date('Y-m-d');
         $key = "USD";
@@ -78,9 +79,9 @@ class InputProductsController extends Controller
                 $oldSellingPrice = $productVariantDetail->old_selling_price;
                 $detailRaise = $productVariantDetail->raise;
                 if ($input->currency_type == 'USD') {
-                    $newSellingPrice = $input->input_price * $currency * (($detailRaise / 100)+1);
+                    $newSellingPrice = $input->input_price * $currency * (($detailRaise / 100) + 1);
                 } else {
-                    $newSellingPrice = $input->input_price * (($detailRaise / 100)+1);
+                    $newSellingPrice = $input->input_price * (($detailRaise / 100) + 1);
                 }
 
                 if ($newSellingPrice < $oldSellingPrice) {
@@ -121,6 +122,7 @@ class InputProductsController extends Controller
     }
     public function update(InputProductRequest $request, $id)
     {
+        if (!($this->check('product', 'update'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $input_product = InputProduct::where('id', $id)->first();
             $input_product->update([

@@ -12,6 +12,7 @@ class ProductController extends Controller
 {
     public function index()
     {
+        if (!($this->check('product', 'get'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         $perPage = request('per_page', 15);
         $search = request('search');
         $product = Product::with('productBrend:id,brend_title', 'productCategory:id,category_title', 'productUser:id,full_name')
@@ -23,6 +24,7 @@ class ProductController extends Controller
     }
     public function store(ProductRequest $request)
     {
+        if (!($this->check('product', 'add'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         try {
             Product::create([
                 'title' => $request->title,
@@ -42,6 +44,7 @@ class ProductController extends Controller
     }
     public function update(ProductRequest $request, $id)
     {
+        if (!($this->check('product', 'update'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $product = Product::where('id', $id)->first();
             $product->update([

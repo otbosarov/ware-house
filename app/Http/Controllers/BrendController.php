@@ -11,16 +11,18 @@ class BrendController extends Controller
 {
     public function index()
     {
-        $parPage = request('par_page',15);
+        if (!($this->check('brend', 'get'))) return response()->json(["message" => "Amaliyotga huquq yo'q"], 403);
+        $parPage = request('par_page', 15);
         $search = request('search');
-        $data =  Brend:: when($search,function($query)use($search){
-            $query->where('brend_title',"LIKE","%$search%");
+        $data =  Brend::when($search, function ($query) use ($search) {
+            $query->where('brend_title', "LIKE", "%$search%");
         })
-        ->paginate($parPage);
+            ->paginate($parPage);
         return BrendResource::collection($data);
     }
     public function store(BrendRequest $request)
     {
+        if (!($this->check('brend', 'add'))) return response()->json(["message" => "Amaliyotga huquq yo'q"], 403);
         try {
             Brend::create([
                 'brend_title' => $request->brend_title
@@ -37,6 +39,7 @@ class BrendController extends Controller
     }
     public function get_all()
     {
+        if (!($this->check('brend', 'show'))) return response()->json(["message" => "Amaliyotga huquq yo'q"], 403);
         return Brend::where('active', true)->get();
     }
 }

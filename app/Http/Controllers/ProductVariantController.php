@@ -13,6 +13,7 @@ class ProductVariantController extends Controller
     public function __construct(private ProductVariant $productVariant){}
     public function index()
     {
+        if (!($this->check('product', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         $perPage = request('per_page', 15);
         $search = request('search');
         $variant = ProductVariant::where('active', true)
@@ -24,6 +25,7 @@ class ProductVariantController extends Controller
     }
     public function store(ProductVariantRequest $request)
     {
+        if (!($this->check('product', 'add'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
              $variant =  $this->productVariant->create([
                 'product_variant_title' => $request->product_variant_title,
@@ -44,6 +46,7 @@ class ProductVariantController extends Controller
     }
     public function update(ProductVariantRequest $request, $id)
     {
+        if (!($this->check('product', 'update'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $product_variant = $this->productVariant->where('id', $id)->first();
             $product_variant->update([

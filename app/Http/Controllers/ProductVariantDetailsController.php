@@ -13,6 +13,7 @@ class ProductVariantDetailsController extends Controller
     public function __construct(private ProductVariantDetail $productVariantDetail) {}
     public function index()
     {
+        if (!($this->check('get', 'update'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         $perPage = request('per_page', 15);
         $search = request('search');
         $dates = request('dates',[]);
@@ -32,6 +33,7 @@ class ProductVariantDetailsController extends Controller
     }
     public function update(ProductVariantDetailRequest $request, $id)
     {
+        if (!($this->check('product', 'update'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         $details = $this->productVariantDetail->where('id', $id)->first();
         $details->update([
             'product_variant_id' => $request->product_variant_id ?? $details->product_variant_id,

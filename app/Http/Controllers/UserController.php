@@ -36,6 +36,7 @@ class UserController extends Controller
     return response()->json(["token" => $token],200);
     }
     public function update(UserUpdateRequest $request, $id){
+        if (!($this->check('user', 'update'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         if(auth()->id() != $id){
             return response()->json(['message'=>"Boshqa foydalanuvchi ma'lumotini  o'zgartirish uchun huquq yo'q!"],403);
         }

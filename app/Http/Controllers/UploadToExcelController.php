@@ -14,6 +14,7 @@ class UploadToExcelController extends Controller
 {
         public function InputProductsExcel()
     {
+        if (!($this->check('xisobot', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         $dates = request('dates',[]);
         $data =   InputProduct::join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
@@ -44,6 +45,7 @@ class UploadToExcelController extends Controller
     }
     public function OutputProductsExcel()
     {
+        if (!($this->check('xisobot', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         $dates = request('dates',[]);
         $data = OutputProduct::join('product_variants', 'output_products.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
@@ -64,6 +66,7 @@ class UploadToExcelController extends Controller
     }
     public function ProductVariantDetailsExcel()
     {
+        if (!($this->check('xisobot', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         $dates = request('dates', []);
 
         $data =  ProductVariantDetail::join('product_variants', 'product_variant_details.product_variant_id', 'product_variants.id')
