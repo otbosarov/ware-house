@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\UniversalResource;
 use App\Models\Brend;
 use App\Models\Category;
@@ -19,7 +20,7 @@ class CategoryController extends Controller
             $query->where('category_title',"LIKE","%$search%");
         })
         ->paginate($parPage);
-        return UniversalResource::collection($data);
+        return CategoryResource::collection($data);
     }
     public function store(CategoryRequest $request)
     {

@@ -10,12 +10,9 @@ use App\Models\OutputProduct;
 use App\Models\ProductVariantDetail;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-
-//new UploadToExcelController($data);
 class UploadToExcelController extends Controller
 {
-    // public function __construct(private $data) {}
-    public function InputProductsExcel()
+        public function InputProductsExcel()
     {
         $dates = request('dates',[]);
         $data =   InputProduct::join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')

@@ -15,6 +15,7 @@ class ProductVariantDetailsController extends Controller
     {
         $perPage = request('per_page', 15);
         $search = request('search');
+        $dates = request('dates',[]);
         $details =   $this->productVariantDetail
             ->join('product_variants', 'product_variant_details.product_variant_id',  'product_variants.id')
             ->join('products', 'product_variants.product_id', 'products.id')
@@ -22,6 +23,9 @@ class ProductVariantDetailsController extends Controller
             ->join('brends', 'products.product_brend_id',  'brends.id')
             ->when($search, function ($query) use ($search) {
                 $query->where('', "LIKE", "%$search%");
+            })
+            ->when($dates,function($query)use($dates){
+                $query->whereBetween('product_variant_details.created_at',$dates);
             })
             ->paginate($perPage);
         return ProductVariantDetailResource::collection($details);

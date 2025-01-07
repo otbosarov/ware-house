@@ -23,7 +23,7 @@ class BrendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brend_title' => 'required|string|min:2|max:255'
+            'brend_title' => 'required|string|min:2|max:120|unique:brends,brend_title'
         ];
     }
     public function messages(){
@@ -31,7 +31,8 @@ class BrendRequest extends FormRequest
             'brend_title.required' => 'Brend nomini kirting',
             'brend_title.string' => 'Brend nomi matn ko\'rinishida bo\'lsin',
             'brend_title.min' => "Brend nomi kamida 2 belgidan iborat bo'lishi kerak",
-            'brend_title.max' => "Brend nomi 255 ta belgidan oshmasligi kerak"
+            'brend_title.max' => "Brend nomi 120 ta belgidan oshmasligi kerak",
+            'brend_title.unique' => "Bu Brend avval yaratilgan "
         ];
     }
 }
