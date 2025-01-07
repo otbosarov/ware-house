@@ -23,7 +23,7 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_title' => 'required|string|min:3|max:255',
+            'category_title' => 'required|string|min:3|max:150|unique:categories,category_title',
             'raise' =>  'required|integer|between:1,100'
         ];
     }
@@ -32,7 +32,8 @@ class CategoryRequest extends FormRequest
             'category_title.required' => ' Kategoriya nomini kiriting',
             'category_title.string' => " Kategoriya nomi matn ko'rinishda kiriting",
             'category_title.min' => " Kategoriya nomi kamida 3 ta belgidan iborat bo'lsin",
-            'category_title.max' => " Kategoriya nomi 255 ta belgidan oshmasligi kerak",
+            'category_title.max' => " Kategoriya nomi 150 ta belgidan oshmasligi kerak",
+            'category_title.unique' => "Bu katagoriya avval yaratilgan",
 
             'raise.required' => "Kategoriya ustamani kiriting ",
             'raise.integer' => "Kategoriya ustama butun son bo'lishi kerak",

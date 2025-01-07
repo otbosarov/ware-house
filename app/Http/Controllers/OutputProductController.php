@@ -16,12 +16,12 @@ class OutputProductController extends Controller
     {
         $parPage = request('par_page', 15);
         $search = request('search');
-        $dates = request('dates',[]);
+        $dates = request('dates',[]);  // array korinishda beriladi ?  M: key => dates []  value => Y-m-d
 
         $data = OutputProduct::join('product_variants', 'output_products.product_variant_id', '=', 'product_variants.id')
 
-            ->when($$dates, function ($query) use ($dates) {
-                $query->whereBetween('output_products.created_at', $$dates);
+            ->when($dates, function ($query) use ($dates) {
+                $query->whereBetween('output_products.created_at', $dates);
              })
             ->when($search, function ($query) use ($search) {
                 $query->where('product_variant_title', "LIKE", "$$search$");
@@ -37,11 +37,11 @@ class OutputProductController extends Controller
             $productQuantity = $request->output_quantity;
 
             $product_variant_detail = ProductVariantDetail::where('product_variant_id', $productVariantId)->first();
-            $resuide_detail = $product_variant_detail->residue;
 
             if (!$product_variant_detail) {
                 return response()->json(['message' => "Bunday ma'lumot topilmadi!"], 404);
             }
+            $resuide_detail = $product_variant_detail->residue;
 
             if ($productQuantity > $resuide_detail) {
                 return response()->json(['message' => 'Qoldiq yetarli emas'], 409);

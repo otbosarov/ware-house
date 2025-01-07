@@ -20,8 +20,8 @@ class InputProductsController extends Controller
         $startDate = request('start_date');
         $endDate = request('end_date');
         $dates = [
-            $startDate,
-            $endDate
+            $startDate, //array korinishda beriladi ? M: key => start_date []  value => Y-m-d formatda
+            $endDate   //array korinishda beriladi ?  M: key => end_date []  value => Y-m-d formatda
         ];
 
         $productInput = InputProduct::where('active', true)
