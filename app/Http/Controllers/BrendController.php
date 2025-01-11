@@ -11,7 +11,7 @@ class BrendController extends Controller
 {
     public function index()
     {
-        if (!($this->check('brend', 'get'))) return response()->json(["message" => "Amaliyotga huquq yo'q"], 403);
+        if (!($this->check('brend', 'show'))) return response()->json(["message" => "Amaliyotga huquq yo'q"], 403);
         $parPage = request('par_page', 15);
         $search = request('search');
         $data =  Brend::when($search, function ($query) use ($search) {

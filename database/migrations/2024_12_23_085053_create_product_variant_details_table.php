@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_variant_id')->constrained('product_variants')->unique();
             $table->integer('residue');
+            $table->integer('input_price');
             $table->integer('selling_price');
             $table->integer('raise');
             $table->integer('old_selling_price');

@@ -20,6 +20,8 @@ class ProductVariantDetailResource extends JsonResource
             'category_name'=>$this->category_title,
             'brand'=> $this->brend_title,
             'raise' =>$this->raise,
+            'currency_type' => $this->currency_type,
+            'input_price' => $this->input_price,
             'selling_price'=>$this->selling_price,
             'old_selling_price' =>$this->old_selling_price,
             'residue' => $this->residue,

@@ -2,97 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\InputProductExcelExport;
-use App\Exports\OutputProductExcelExport;
-use App\Exports\ProductVariantDetailExcelExport;
-use App\Models\InputProduct;
-use App\Models\OutputProduct;
+use App\Jobs\InputProductExcelUploadJob;
+use App\Jobs\OutputProductExcelUploadJob;
+use App\Jobs\ProductVariantDetailExcelUploadJob;
 use App\Models\ProductVariantDetail;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+
 class UploadToExcelController extends Controller
 {
-        public function InputProductsExcel()
+    public function InputProductsExcel()
     {
-        if (!($this->check('xisobot', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
-        $dates = request('dates',[]);
-        $data =   InputProduct::join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')
-            ->join('products', 'product_variants.product_id', '=', 'products.id')
-            ->join('categories', 'products.product_category_id', '=', 'categories.id')
-            ->join('brends', 'products.product_brend_id', '=', 'brends.id')
-            ->join('product_variant_details', 'product_variants.id', '=', 'product_variant_details.product_variant_id')
-            ->when($dates,function($query)use($dates){
-                $query->whereBetween('input_products.created_at',$dates);
-            })
-            ->select(
-                'input_products.id',
-                'product_variant_title',
-                'category_title',
-                'brend_title',
-                'currency_type',
-                'input_price',
-                'selling_price',
-                'amount'
-            )
-            ->get();
+        if (!($this->check('hisobot_excel', 'hisobot'))) {
+            return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
+        }
+        $dates = request('dates', []);
+
         $now = date("Y_m_d_H_i_s");
-        $url = "public/" . $now . "input_products_excel.xlsx";
-        Excel::store(new InputProductExcelExport($data), $url);
+        $userId = auth()->id();
+        $url = "public/" . $now . "_" . $userId . "_input_products_excel.xlsx";
+        // $data = [
+        //     'dates' => $dates,
+        //     'url' => $url
+        // ];
+
+        dispatch(new InputProductExcelUploadJob($dates, $url));
+
+        // dispatch(new InputProductExcelUploadJob($data));
         return response()->json([
             'message' => "Kirim tovarlar excalga yuklandi",
-            'file_url' => "storage/input_products_excel.xlsx"
+            'file_url' => "storage/" . $url
         ], 200);
     }
     public function OutputProductsExcel()
     {
-        if (!($this->check('xisobot', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
-        $dates = request('dates',[]);
-        $data = OutputProduct::join('product_variants', 'output_products.product_variant_id', '=', 'product_variants.id')
-            ->join('products', 'product_variants.product_id', '=', 'products.id')
-            ->join('categories', 'products.product_category_id', '=', 'categories.id')
-           ->when($dates,function($query)use($dates){
-             $query->whereBetween('output_products.created_at',$dates);
-           })
-            ->select('output_products.id', 'product_variant_title', 'category_title', 'output_quantity', 'output_selling_price')
-            ->get();
-        $now = date("Y_m_d_H_i_s");
-        $url = "public/" . $now . "output_products_excel.xlsx";
+        if (!($this->check('hisobot_excel', 'hisobot'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
+        $dates = request('dates', []);
 
-        Excel::store(new OutputProductExcelExport($data), $url);
+        $now = date("Y_m_d_H_i_s");
+        $userId = auth()->id();
+        $url = "public/" . $now . "_" . $userId . "_output_products_excel.xlsx";
+
+        $data = [
+            'dates' => $dates,
+            'url' => $url
+        ];
+
+        dispatch(new OutputProductExcelUploadJob($data));
         return response()->json([
             'message' => "Chiqim tovarlar excalga yuklandi",
-            'file_url' => "storage/output_products_excel.xlsx"
+            'file_url' => "storage/" . $url
         ], 200);
     }
     public function ProductVariantDetailsExcel()
     {
-        if (!($this->check('xisobot', 'get'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
+        if (!($this->check('hisobot_excel', 'hisobot'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
+
         $dates = request('dates', []);
 
-        $data =  ProductVariantDetail::join('product_variants', 'product_variant_details.product_variant_id', 'product_variants.id')
-            ->join('products', 'product_variants.product_id', 'products.id')
-            ->join('categories', 'products.product_category_id', 'categories.id')
-            ->join('brends', 'products.product_brend_id', 'brends.id')
-            ->when($dates, function ($query) use ($dates) {
-                   $query->whereBetween('product_variant_details.created_at', $dates);
-            })
-            ->select(
-                'product_variant_id',
-                'product_variants.product_variant_title',
-                'product_variant_details.raise',
-                'products.product_category_id',
-                'products.product_brend_id',
-                'product_variant_details.old_selling_price',
-                'product_variant_details.selling_price',
-                'product_variant_details.residue',
-            )
-            ->get();
         $now = date("Y_m_d_H_i_s");
-        $url = "public/" . $now . "product_variant_details_excel.xlsx";
-        Excel::store(new ProductVariantDetailExcelExport($data), $url);
+        $userId = auth()->id();
+        $url = "public/" . $now . "_" . $userId .  "_product_variant_details_excel.xlsx";
+
+        $data = [
+            'dates' => $dates,
+            'url' => $url
+        ];
+
+        dispatch(new ProductVariantDetailExcelUploadJob($data));
         return response()->json([
             'message' => "Tovar qoldig'i excalga yuklandi",
-            'file_url' => 'storage/product_variant_details_excel.xlsx'
+            'file_url' => "storage/" . $url
         ], 200);
     }
 }

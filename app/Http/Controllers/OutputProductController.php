@@ -14,7 +14,7 @@ class OutputProductController extends Controller
 {
     public function index()
     {
-        if(!($this->check('product','get'))) return response()->json(['message' => "Amaliyotga huquq yo'q"],403);
+        if(!($this->check('products','show'))) return response()->json(['message' => "Amaliyotga huquq yo'q"],403);
         $parPage = request('par_page', 15);
         $search = request('search');
         $dates = request('dates',[]);  // array korinishda beriladi ?  M: key => dates []  value => Y-m-d
@@ -32,7 +32,7 @@ class OutputProductController extends Controller
     }
     public function store(OutputProductRequest $request)
     {
-        if (!($this->check('product', 'add'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
+        if (!($this->check('products', 'add'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         DB::beginTransaction();
         try {
             $productVariantId = $request->product_variant_id;

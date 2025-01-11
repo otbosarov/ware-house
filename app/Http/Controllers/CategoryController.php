@@ -14,7 +14,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        if (!($this->check('category', 'get'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
+        if (!($this->check('category', 'show'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         $parPage = request('par_page', 15);
         $search = request('search');
         $data =  Category::when($search, function ($query) use ($search) {
