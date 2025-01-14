@@ -15,22 +15,18 @@ class InputProductsController extends Controller
 {
     public function index()
     {
+        if (!($this->check('products', 'show'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         $perPage = request('per_page', 15);
         $search = request('search');
-        $startDate = request('start_date');
-        $endDate = request('end_date');
-        $dates = [
-            $startDate, //array korinishda beriladi ? M: key => start_date []  value => Y-m-d formatda
-            $endDate   //array korinishda beriladi ?  M: key => end_date []  value => Y-m-d formatda
-        ];
+        $dates = request('dates', []);
 
         $productInput = InputProduct::where('active', true)
-            ->join('product_variants', 'input_products.product_variant_id', '=', 'product_variants.id')
+            ->join('product_variants', 'input_products.product_variant_id',  'product_variants.id')
 
             ->when($search, function ($query) use ($search) {
                 $query->where('product_variant_title', "LIKE", "%$search%");
             })
-            ->when($startDate, function ($query) use ($dates, ) {
+            ->when($dates, function ($query) use ($dates,) {
                 $query->whereBetween('input_products.created_at', $dates);
             })
             ->paginate($perPage);
@@ -38,10 +34,10 @@ class InputProductsController extends Controller
     }
     public function store(InputProductRequest $request)
     {
-
+        if (!($this->check('products', 'add'))) return response()->json(['message' => "Amaliyotga huquq yo'q"], 403);
         $client = new Client();
-        $now = date('Y-m-d');
         $key = "USD";
+        $now = date('Y-m-d');
         $url = "https://cbu.uz/uz/arkhiv-kursov-valyut/json/" . $key . "/" . $now . "/";
         $response = $client->get($url);
         $statusCode = $response->getStatusCode();
@@ -78,9 +74,9 @@ class InputProductsController extends Controller
                 $oldSellingPrice = $productVariantDetail->old_selling_price;
                 $detailRaise = $productVariantDetail->raise;
                 if ($input->currency_type == 'USD') {
-                    $newSellingPrice = $input->input_price * $currency * (($detailRaise / 100)+1);
+                    $newSellingPrice = $input->input_price * $currency * (($detailRaise / 100) + 1);
                 } else {
-                    $newSellingPrice = $input->input_price * (($detailRaise / 100)+1);
+                    $newSellingPrice = $input->input_price * (($detailRaise / 100) + 1);
                 }
 
                 if ($newSellingPrice < $oldSellingPrice) {
@@ -91,6 +87,7 @@ class InputProductsController extends Controller
 
                 $productVariantDetail->update([
                     'residue' => $productVariantDetail->residue + $request->amount,
+                    'input_price' => $request->input_price,
                     'selling_price' => $potensialPrice,
                     'old_selling_price' => $potensialPrice,
                 ]);
@@ -101,6 +98,7 @@ class InputProductsController extends Controller
 
                 ProductVariantDetail::create([
                     'product_variant_id' => $request->product_variant_id,
+                    'input_price' => $request->input_price,
                     'selling_price' => $USD ? $USDPrice : $UZSPrice,
                     'residue' => $request->amount,
                     'raise' => $categoryRaise,
@@ -121,8 +119,12 @@ class InputProductsController extends Controller
     }
     public function update(InputProductRequest $request, $id)
     {
+        if (!($this->check('products', 'edit'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $input_product = InputProduct::where('id', $id)->first();
+            if(!$input_product){
+                return response()->json(['message'=> "Bu ID li ma'lumot mavjud emas"],200);
+            }
             $input_product->update([
                 'product_variant_id' => $request->product_variant_id,
                 'input_price' => $request->input_price,

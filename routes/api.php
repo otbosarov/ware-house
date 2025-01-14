@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 
     Route::put('user/update/{id}',[UserController::class,'update']);
     Route::get('user_info',[UserController::class,'get_profil']);
-/*
+    
     Route::get('brend/show',[BrendController::class,'index']);
     Route::post('brend/create',[BrendController::class,'store']);
 
@@ -59,7 +59,6 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 
     Route::get('out_product_show',[OutputProductController::class,'index']);
     Route::post('output_product_create',[OutputProductController::class,'store']);
- */
 
     Route::get('input_products_excel',[UploadToExcelController::class,'InputProductsExcel']);
     Route::get('output_products_excel',[UploadToExcelController::class,'OutputProductsExcel']);
