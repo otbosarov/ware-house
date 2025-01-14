@@ -122,6 +122,9 @@ class InputProductsController extends Controller
         if (!($this->check('products', 'edit'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $input_product = InputProduct::where('id', $id)->first();
+            if(!$input_product){
+                return response()->json(['message'=> "Bu ID li ma'lumot mavjud emas"],200);
+            }
             $input_product->update([
                 'product_variant_id' => $request->product_variant_id,
                 'input_price' => $request->input_price,

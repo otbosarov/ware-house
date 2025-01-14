@@ -47,6 +47,9 @@ class ProductController extends Controller
         if (!($this->check('products', 'edit'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $product = Product::where('id', $id)->first();
+        if(!$product){
+            return response()->json(['message'=>'Bu ID li ma\'lumot mavjud emas'],200);
+        }
             $product->update([
                 'title' => $request->title,
                 'product_category_id' => $request->product_category_id,

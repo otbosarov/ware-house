@@ -39,6 +39,9 @@ class ProductVariantDetailsController extends Controller
         $details = ProductVariantDetail::where('product_variant_details.id', $id)
             ->join('input_products', 'input_products.product_variant_id', 'product_variant_details.product_variant_id')
             ->first();
+            if(!$details){
+                return response()->json(['message' => "Bunday ma'lumot mavjud emas"],200);
+            }
             $client = new Client();
             $key = 'USD';
             $now = date('Y-m-d');

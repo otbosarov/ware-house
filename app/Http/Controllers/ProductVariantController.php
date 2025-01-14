@@ -49,6 +49,9 @@ class ProductVariantController extends Controller
         if (!($this->check('products', 'edit'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $product_variant = $this->productVariant->where('id', $id)->first();
+            if(!$product_variant){
+                return response()->json(['message'=>'Bu ID li ma\'lumot mavjud emas '],200);
+            }
             $product_variant->update([
                 'product_variant_title' => $request->product_variant_title ?? $product_variant->product_variant_title,
                 'product_id' => $request->product_id ?? $product_variant->product_id,
