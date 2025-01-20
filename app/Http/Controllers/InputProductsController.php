@@ -43,7 +43,6 @@ class InputProductsController extends Controller
         $statusCode = $response->getStatusCode();
         $body = $response->getBody();
 
-
         if ($statusCode == 200) {
             $data = json_decode($body, true);
         }
@@ -122,8 +121,8 @@ class InputProductsController extends Controller
         if (!($this->check('products', 'edit'))) return response()->json(['message' => 'Amaliyotga huquq yo\'q'], 403);
         try {
             $input_product = InputProduct::where('id', $id)->first();
-            if(!$input_product){
-                return response()->json(['message'=> "Bu ID li ma'lumot mavjud emas"],200);
+            if (!$input_product) {
+                return response()->json(['message' => "Bu ID li ma'lumot mavjud emas"], 200);
             }
             $input_product->update([
                 'product_variant_id' => $request->product_variant_id,
