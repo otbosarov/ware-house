@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 
     Route::put('user/update/{id}',[UserController::class,'update']);
     Route::get('user_info',[UserController::class,'get_profil']);
-    
+
     Route::get('brend/show',[BrendController::class,'index']);
     Route::post('brend/create',[BrendController::class,'store']);
 
@@ -70,5 +70,7 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::resource('product_variants',ProductVariantController::class);
     Route::resource('input_products',InputProductsController::class);
     Route::resource('product_variant_details',ProductVariantDetailsController::class);
+
     Route::resource('output_products',OutputProductController::class);
+
  });
